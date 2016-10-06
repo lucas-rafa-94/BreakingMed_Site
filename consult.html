@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <script src="js/main.js"></script>
+    <script type="text/javascript">
+      jQuery(window).load(function() {
+        "use strict";
+        jQuery("#main-loader img").delay(1200).fadeOut();
+        jQuery("#main-loader").delay(1200).fadeOut("slow");
+        jQuery('body').removeClass('overflow');
+      });
+    </script>
+    <script>
+            var App = angular.module('postserviceBM', []);
+            App.controller('postserviceConsulta', function($scope, $http){
+               $scope.consulta = {};
+               $scope.init = function(){                   
+                   $scope.consulta = JSON.parse(window.sessionStorage.getItem('consulta'));
+                   console.log($scope.consulta)
+                  }
+               $scope.init();
+               $scope.postdata = function (resumoConsulta,remediosConsulta,observacaoConsulta) {
+                        var post = $scope.consulta.docs[0];
+                        post.consulta.remediosConsulta = remediosConsulta;
+                        post.consulta.resumoConsulta = resumoConsulta;
+                        post.consulta.observacaoConsulta = observacaoConsulta;
+                        $http.post('https://9c6cebc2-c237-4588-9c99-6bd8db2231af-bluemix.cloudant.com/lucas/', JSON.stringify(post)).success(function(data, status, headers, config) {
+                          if(data.ok === true){
+                             window.location.href='index.html'
+                          }
+                         }).error(function(data, status, headers, config) {
+                        });
+                      };
+            });           
+        </script>
+  </head>
+  <body ng-app="postserviceBM" ng-controller="postserviceConsulta">
+    <div id="login-container">
+      <div id="content-image-login"></div>
+      <div id="image-mask-login"></div>
+      <form id="login-form">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <img src="images/logo.png" style="width:200px" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <h4><span class="label label-info">Consulta Breaking Med</span></h4>
+            <h4><span class="label label-info">Médico: {{consulta.docs[0].consulta.medico}}</span></h4>
+            <h4><span class="label label-info">Especialidade: {{consulta.docs[0].consulta.especialidade}}</span></h4>
+          </div>
+        </div>
+        <div id="login-form-content">
+          <div class="row">
+            <div class="col-md-12">
+              <label>Resumo Consulta:</label>
+              <textarea ng-model="resumoConsulta" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Remédios Prestados:</label>
+              <textarea ng-model="remediosConsulta" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Observaçoes:</label>
+              <textarea ng-model="observacaoConsulta" class="form-control " rows="3"></textarea>
+            </div>
+          </div>
+         <div class="row">
+          <div class="col-md-12">
+            <div class="text-center">
+              <input type="button" name="submit" value="Submit" ng-click="postdata(resumoConsulta,remediosConsulta,observacaoConsulta)" class="btn btn-welcome hover-ease" id="login-submit">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

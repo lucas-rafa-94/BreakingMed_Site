@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Breaking Med</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="content-language" content="pt-br" />
+    <meta name="author" content="Breaking Med" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <script src="js/main.js"></script>
+    <script type="text/javascript">
+      jQuery(window).load(function() {
+        "use strict";
+        jQuery("#main-loader img").delay(1200).fadeOut();
+        jQuery("#main-loader").delay(1200).fadeOut("slow");
+        jQuery('body').removeClass('overflow');
+      });
+    </script>
+    <script type="text/javascript">
+        var app = angular.module('postserviceBM', []);
+                    app.controller('postserviceConsulta', function ($scope, $http) {
+                    $scope.login = null;
+                    $scope.senha = null;
+                    $scope.postdata = function (login, senha) {
+                        var query = {"selector": {"_id": login,"consulta.senha": senha},"fields": []}
+                        $http.post('https://9c6cebc2-c237-4588-9c99-6bd8db2231af-bluemix.cloudant.com/lucas/_find', JSON.stringify(query)).success(function(data, status, headers, config) {
+                             var response = data;
+                             if(response.docs[0]._id){
+                             window.sessionStorage.setItem('consulta', JSON.stringify(data));
+                             window.location.href='consult.html'
+                             }
+                        }).error(function(data, status, headers, config) {
+                        });
+                      };
+                    });
+</script>
+  </head>
+  <body ng-app="postserviceBM" ng-controller="postserviceConsulta">
+    <div id="login-container">
+      <div id="content-image-login"></div>
+      <div id="image-mask-login"></div>
+      <form id="login-form">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <img src="images/logo.png" style="width:200px" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <h4>Faça seu login no Breaking Med.</h4>
+          </div>
+        </div>
+        <div id="login-form-content">
+          <div class="row">
+            <div class="col-md-12">
+              <label>Login</label>
+              <input ng-model="login" type="text" name="login" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Senha</label>
+              <input ng-model="senha" type="password" name="password" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="text-center">
+              <input type="button" name="submit" value="Entrar" ng-click="postdata(login, senha)" class="btn btn-welcome hover-ease" id="login-submit">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
